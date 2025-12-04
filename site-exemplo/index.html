@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Matrix Hacker Alert</title>
+  <style>
+    body {
+      margin: 0;
+      background: url('https://picsum.photos/1920/1080?nature') no-repeat center center fixed;
+      background-size: cover;
+      font-family: "Courier New", monospace;
+      overflow: hidden;
+    }
+    canvas {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    /* Botão centralizado */
+    #startBtn {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 14px 28px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      background: rgba(0,0,0,0.7);
+      color: #0f0;
+      border: 2px solid #0f0;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 2;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
+      50% { box-shadow: 0 0 20px #0f0, 0 0 40px #0f0; }
+      100% { box-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
+    }
+
+    /* Mensagem digitada */
+    #typedMessage {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      color: #0f0;
+      z-index: 2;
+    }
+
+    /* Alerta piscando e mudando de cor */
+    #alertMessage {
+      position: fixed;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      font-weight: bold;
+      display: none;
+      z-index: 2;
+      animation: colorChange 3s infinite, blink 1s infinite;
+    }
+    @keyframes colorChange {
+      0% { color: red; }
+      33% { color: yellow; }
+      66% { color: white; }
+      100% { color: red; }
+    }
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+  <div id="typedMessage"></div>
+  <div id="alertMessage">>>> Você está sendo monitorado por MDF <<<</div>
+  <button id="startBtn">Iniciar</button>
+
+  <script>
+    const startBtn = document.getElementById("startBtn");
+    const typedMessage = document.getElementById("typedMessage");
+    const alertMessage = document.getElementById("alertMessage");
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    let i = 0;
+    let alarmInterval;
+
+    // Sons
+    function playBeep(ctx) {
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      oscillator.type = "square";
+      oscillator.frequency.setValueAtTime(800, ctx.currentTime);
+      gainNode.gain.setValueAtTime(0.05, ctx.currentTime);
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      oscillator.start();
+      oscillator.stop(ctx.currentTime + 0.05);
+    }
+
+    function playAlarm(ctx) {
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      oscillator.type = "sawtooth";
+      oscillator.frequency.setValueAtTime(400, ctx.currentTime);
+      gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      oscillator.start();
+      oscillator.stop(ctx.currentTime + 0.5);
+    }
+
+    // Digitação da mensagem com beep
+    const text = "⚠️ Tome cuidado na próxima vez que acessar esse site";
+    function typeWriter(ctx) {
+      if (i < text.length) {
+        typedMessage.textContent += text.charAt(i);
+        playBeep(ctx);
+        i++;
+        setTimeout(() => typeWriter(ctx), 80);
+      } else {
+        // depois que termina, ativa alerta piscando e som de 3 em 3 segundos
+        alertMessage.style.display = "block";
+        alarmInterval = setInterval(() => playAlarm(ctx), 3000);
+      }
+    }
+
+    // Matrix Rain
+    function startMatrix() {
+      canvas.style.display = "block";
+      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+
+      const letters = 'アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const lettersArray = letters.split('');
+      const fontSize = 16;
+      const columns = canvas.width / fontSize;
+      const drops = [];
+      for (let x = 0; x < columns; x++) drops[x] = 1;
+
+      function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0F0';
+        ctx.font = fontSize + 'px monospace';
+        for (let i = 0; i < drops.length; i++) {
+          const text = lettersArray[Math.floor(Math.random() * lettersArray.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        }
+      }
+      setInterval(draw, 33);
+    }
+
+    // Ao clicar no botão
+    startBtn.addEventListener("click", () => {
+      startBtn.style.display = "none"; // esconde botão
+      document.body.style.background = "black"; // troca fundo para Matrix
+      startMatrix();
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      typeWriter(audioCtx);
+    });
+  </script>
+</body>
+</html>
