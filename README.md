@@ -1,2 +1,3 @@
 # alerta-de-matriz
-meu projeto
+
+Repositorio criado durante uma aula
