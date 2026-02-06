@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Cadastro</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
+    <title>MDF - Novo Registro</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="login-box">
-    <h2>Cadastro</h2>
-    <form id="cadastroForm">
-      <input type="text" name="usuario" placeholder="Usuário" required>
-      <input type="password" name="senha" placeholder="Senha (mínimo 6 caracteres)" required>
-      <input type="password" name="confirmarSenha" placeholder="Confirme a senha" required>
-      <button type="submit">Cadastrar</button>
-    </form>
-    <p style="color:#0f0; margin-top:10px;">
-      Já tem conta? <a href="index.html" style="color:#0f0;">Faça login</a>
-    </p>
-  </div>
-  <script src="script.js"></script>
+    <div class="login-box">
+        <h2>[ NOVO_USUÁRIO ]</h2>
+        <form id="cadastroForm">
+            <input type="text" name="usuario" placeholder="Definir ID" required autocomplete="off">
+            <input type="password" name="senha" placeholder="Senha (mín. 6 chars)" required minlength="6" autocomplete="new-password">
+            <input type="password" name="confirmarSenha" placeholder="Confirmar Senha" required minlength="6" autocomplete="new-password">
+            <button type="submit">CRIAR CREDENCIAIS</button>
+        </form>
+        <p style="color:#0f0; margin-top:15px; font-size: 0.8rem;">
+            Já possui ID? <a href="index.html" style="color:#0f0; text-decoration: none; border-bottom: 1px dashed #0f0;">[ ENTRAR ]</a>
+        </p>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
