@@ -1,0 +1,69 @@
+body {
+  margin: 0;
+  background: black; /* fundo minimalista */
+  font-family: "Courier New", monospace;
+  overflow: hidden;
+}
+/* Caixa de login centralizada */
+.login-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.7);
+  padding: 30px;
+  border: 2px solid #0f0;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #0f0;
+  text-align: center;
+  z-index: 2;
+}
+
+.login-box h2 {
+  color: #0f0;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #0f0;
+}
+
+/* Inputs estilo hacker */
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  background: black;
+  border: 1px solid #0f0;
+  border-radius: 5px;
+  color: #0f0;
+  font-size: 1rem;
+}
+
+.login-box input::placeholder {
+  color: #0f0;
+  opacity: 0.7;
+}
+
+/* Botão de login */
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background: rgba(0,0,0,0.8);
+  color: #0f0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: 2px solid #0f0;
+  border-radius: 8px;
+  cursor: pointer;
+  animation: pulse 1.5s infinite;
+}
+
+.login-box button:hover {
+  background: #0f0;
+  color: black;
+}
+
+/* Reaproveitando animação pulse */
+@keyframes pulse {
+  0% { box-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
+  50% { box-shadow: 0 0 20px #0f0, 0 0 40px #0f0; }
+  100% { box-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
+}
