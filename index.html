@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Login</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
+    <title>MDF - Acesso ao Sistema</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="login-box">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <input type="text" name="usuario" placeholder="Usuário" required>
-      <input type="password" name="senha" placeholder="Senha" required>
-      <button type="submit">Entrar</button>
-    </form>
-    <p style="color:#0f0; margin-top:10px;">
-      Não tem conta? <a href="cadastro.html" style="color:#0f0;">Cadastre-se</a>
-    </p>
-  </div>
-  <script src="script.js"></script>
+    <div class="login-box">
+        <h2>[ LOGIN_UNIX ]</h2>
+        <form id="loginForm">
+            <input type="text" name="usuario" placeholder="Terminal ID" required autocomplete="off">
+            <input type="password" name="senha" placeholder="Passcode" required>
+            <button type="submit">AUTENTICAR</button>
+        </form>
+        <p style="color:#0f0; margin-top:15px; font-size: 0.8rem;">
+            Novo aqui? <a href="cadastro.html" style="color:#0f0; text-decoration: none; border-bottom: 1px dashed #0f0;">[ REGISTRAR ]</a>
+        </p>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
