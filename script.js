@@ -1,52 +1,76 @@
-const startBtn = document.getElementById("startBtn");
-const typedMessage = document.getElementById("typedMessage");
-const alertMessage = document.getElementById("alertMessage");
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
-let i = 0;
-let alarmInterval;
+// Função para salvar usuário no localStorage
+function salvarUsuario(usuario, senha) {
+  let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-// Sons
-function playBeep(ctx) {
-  const oscillator = ctx.createOscillator();
-  const gainNode = ctx.createGain();
-  oscillator.type = "square";
-  oscillator.frequency.setValueAtTime(800, ctx.currentTime);
-  gainNode.gain.setValueAtTime(0.05, ctx.currentTime);
-  oscillator.connect(gainNode);
-  gainNode.connect(ctx.destination);
-  oscillator.start();
-  oscillator.stop(ctx.currentTime + 0.05);
-}
-
-function playAlarm(ctx) {
-  const oscillator = ctx.createOscillator();
-  const gainNode = ctx.createGain();
-  oscillator.type = "sawtooth";
-  oscillator.frequency.setValueAtTime(400, ctx.currentTime);
-  gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
-  oscillator.connect(gainNode);
-  gainNode.connect(ctx.destination);
-  oscillator.start();
-  oscillator.stop(ctx.currentTime + 0.5);
-}
-
-// Digitação da mensagem com beep
-const text = "⚠️ Tome cuidado na próxima vez que acessar esse site";
-function typeWriter(ctx) {
-  if (i < text.length) {
-    typedMessage.textContent += text.charAt(i);
-    playBeep(ctx);
-    i++;
-    setTimeout(() => typeWriter(ctx), 80);
-  } else {
-    alertMessage.style.display = "block";
-    alarmInterval = setInterval(() => playAlarm(ctx), 3000);
+  // Verifica se já existe usuário com esse nome
+  const existe = usuarios.find(u => u.usuario === usuario);
+  if (existe) {
+    alert("Esse usuário já está cadastrado!");
+    return false;
   }
+
+  usuarios.push({ usuario, senha });
+  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+  return true;
 }
 
-// Matrix Rain
-function startMatrix() {
+// Função para verificar login
+function verificarLogin(usuario, senha) {
+  let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+  return usuarios.find(u => u.usuario === usuario && u.senha === senha);
+}
+
+// Cadastro
+const cadastroForm = document.getElementById("cadastroForm");
+if (cadastroForm) {
+  cadastroForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const usuario = cadastroForm.usuario.value;
+    const senha = cadastroForm.senha.value;
+    const confirmarSenha = cadastroForm.confirmarSenha.value;
+
+    // Validação da senha
+    if (senha.length < 6) {
+      alert("A senha deve ter pelo menos 6 caracteres!");
+      return;
+    }
+
+    // Confirmação de senha
+    if (senha !== confirmarSenha) {
+      alert("As senhas não coincidem!");
+      return;
+    }
+
+    if (salvarUsuario(usuario, senha)) {
+      alert("Cadastro realizado com sucesso!");
+      window.location.href = "index.html"; // redireciona para login
+    }
+  });
+}
+
+// Login
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const usuario = loginForm.usuario.value;
+    const senha = loginForm.senha.value;
+
+    if (verificarLogin(usuario, senha)) {
+      document.querySelector(".login-box").style.display = "none";
+      document.body.style.background = "black";
+      iniciarMatrix();
+    } else {
+      alert("Usuário ou senha incorretos!");
+    }
+  });
+}
+
+// ---------------- MATRIX + ALERTAS ----------------
+function iniciarMatrix() {
+  const canvas = document.createElement("canvas");
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext("2d");
   canvas.style.display = "block";
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
@@ -71,13 +95,53 @@ function startMatrix() {
     }
   }
   setInterval(draw, 33);
-}
 
-// Ao clicar no botão
-startBtn.addEventListener("click", () => {
-  startBtn.style.display = "none";
-  document.body.style.background = "black";
-  startMatrix();
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  typeWriter(audioCtx);
-});
+  // Mensagem digitada
+  const typedMessage = document.createElement("div");
+  typedMessage.style.position = "fixed";
+  typedMessage.style.top = "40%";
+  typedMessage.style.left = "50%";
+  typedMessage.style.transform = "translate(-50%, -50%)";
+  typedMessage.style.color = "#0f0";
+  typedMessage.style.fontSize = "1.5rem";
+  typedMessage.style.zIndex = "2";
+  document.body.appendChild(typedMessage);
+
+  const text = "⚠️ Acesso autorizado. Bem-vindo ao sistema.";
+  let i = 0;
+  function typeWriter() {
+    if (i < text.length) {
+      typedMessage.textContent += text.charAt(i);
+      i++;
+      setTimeout(typeWriter, 80);
+    } else {
+      const alertMessage = document.createElement("div");
+      alertMessage.textContent = ">>>> Você está sendo monitorado por MDF <<<<";
+      alertMessage.style.position = "fixed";
+      alertMessage.style.top = "60%";
+      alertMessage.style.left = "50%";
+      alertMessage.style.transform = "translate(-50%, -50%)";
+      alertMessage.style.fontSize = "2rem";
+      alertMessage.style.fontWeight = "bold";
+      alertMessage.style.color = "red";
+      alertMessage.style.zIndex = "2";
+      document.body.appendChild(alertMessage);
+
+      // 🔊 Som de alerta repetindo
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      function playAlarm() {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.type = "sawtooth";
+        oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.5);
+      }
+      setInterval(playAlarm, 3000); // toca a cada 3 segundos
+    }
+  }
+  typeWriter();
+}
