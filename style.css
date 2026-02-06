@@ -1,76 +1,69 @@
 body {
   margin: 0;
-  background: url('https://wallpaperaccess.com/full/48497.jpg') no-repeat center center fixed;
-  background-size: cover;
+  background: black; /* fundo minimalista */
   font-family: "Courier New", monospace;
   overflow: hidden;
 }
-
-canvas {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 0;
-}
-
-/* Botão centralizado */
-#startBtn {
+/* Caixa de login centralizada */
+.login-box {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 14px 28px;
-  font-size: 1.4rem;
-  font-weight: bold;
   background: rgba(0,0,0,0.7);
+  padding: 30px;
+  border: 2px solid #0f0;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #0f0;
+  text-align: center;
+  z-index: 2;
+}
+
+.login-box h2 {
   color: #0f0;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #0f0;
+}
+
+/* Inputs estilo hacker */
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  background: black;
+  border: 1px solid #0f0;
+  border-radius: 5px;
+  color: #0f0;
+  font-size: 1rem;
+}
+
+.login-box input::placeholder {
+  color: #0f0;
+  opacity: 0.7;
+}
+
+/* Botão de login */
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background: rgba(0,0,0,0.8);
+  color: #0f0;
+  font-size: 1.2rem;
+  font-weight: bold;
   border: 2px solid #0f0;
   border-radius: 8px;
   cursor: pointer;
-  z-index: 2;
   animation: pulse 1.5s infinite;
 }
 
+.login-box button:hover {
+  background: #0f0;
+  color: black;
+}
+
+/* Reaproveitando animação pulse */
 @keyframes pulse {
   0% { box-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
   50% { box-shadow: 0 0 20px #0f0, 0 0 40px #0f0; }
   100% { box-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
-}
-
-/* Mensagem digitada */
-#typedMessage {
-  position: fixed;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.5rem;
-  color: #0f0;
-  z-index: 2;
-}
-
-/* Alerta piscando e mudando de cor */
-#alertMessage {
-  position: fixed;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
-  font-weight: bold;
-  display: none;
-  z-index: 2;
-  animation: colorChange 3s infinite, blink 1s infinite;
-}
-
-@keyframes colorChange {
-  0% { color: red; }
-  33% { color: yellow; }
-  66% { color: white; }
-  100% { color: red; }
-}
-
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0; }
-  100% { opacity: 1; }
 }
